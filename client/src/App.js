@@ -1,4 +1,4 @@
-import { BrowserRouter, Routes, Route, useParams } from 'react-router-dom';
+import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import Dashboard from './components/Dashboard';
 import AppHeader from './components/AppHeader';
 import CreateDocument from './components/CreateDocument';
@@ -8,17 +8,31 @@ import Logout from './components/Logout';
 import './App.css';
 import SubmitDocument from './components/SubmitDocument';
 import TrackDocument from './components/TrackDocument';
+import GenerateCode from './components/GenerateCode';
 
 function App(props) {
   const role = props.user.role;
-  if (role === 'admin') {
+  if (role === 'officer') {
     return (
       <div id="app">
         <BrowserRouter>
-          <AppHeader />
+          <AppHeader role='officer' />
           <Routes>
             <Route exact path="/" element={<Dashboard user={props.user} />} />
             <Route exact path="/alldocuments" element={<AllDocuments user={props.user} />} />
+            <Route exact path="/logout" element={<Logout />} />
+          </Routes>
+        </BrowserRouter>
+      </div>
+    );
+  } else if (role === 'admin') {
+    return (
+      <div id="app">
+        <BrowserRouter>
+          <AppHeader role='admin' />
+          <Routes>
+            <Route exact path="/" element={<Dashboard user={props.user} />} />
+            <Route exact path="/generatecode" element={<GenerateCode user={props.user} />} />
             <Route exact path="/logout" element={<Logout />} />
           </Routes>
         </BrowserRouter>
@@ -28,7 +42,7 @@ function App(props) {
   return (
     <div id="app">
       <BrowserRouter>
-        <AppHeader />
+        <AppHeader role='customer' />
         <Routes>
           <Route exact path="/" element={<Dashboard user={props.user} />} />
           <Route exact path="/createdocument" element={<CreateDocument user={props.user} />} />

@@ -8,6 +8,7 @@ const path = require('path');
 
 const Document = require('./../models/Document');
 const Token = require('./../models/Token');
+const Code = require('./../models/Code');
 
 const sendMail = require('./../functions/sendMail');
 
@@ -52,8 +53,7 @@ router.post('/createDocument', async (req, res) => {
         blobStream.end(file.data);
 
     } catch (err) {
-        console.log(err);
-        res.send({ status: 'failed', message: "Something went wrong, please try again." });
+        res.send({ status: 'failed', message: err.message || "Something went wrong, please try again." });
     }
 });
 
@@ -61,11 +61,9 @@ router.post('/downloadDocument', async (req, res) => {
     try {
         const { documentId, userId } = req.body;
         const { publicUrl } = await Document.findOne({ documentId, userId }).exec();
-        console.log(publicUrl);
         res.download("./package.json");
     } catch (err) {
-        console.log(err);
-        res.send({ status: 'failed', message: "Something went wrong, please try again." });
+        res.send({ status: 'failed', message: err.message || "Something went wrong, please try again." });
     }
 });
 
@@ -75,9 +73,9 @@ router.post('/trackdocument', async (req, res) => {
 
         const document = await Document.findOne({ documentId, userId }).exec();
 
-        res.send({document });
+        res.send({ document });
     } catch (err) {
-        res.send({ status: 'failed', message: "Something went wrong, please try again." });
+        res.send({ status: 'failed', message: err.message || "Something went wrong, please try again." });
     }
 });
 
@@ -87,7 +85,7 @@ router.post('/mydocuments', async (req, res) => {
         const documents = await Document.find({ userId }).exec();
         res.send({ documents });
     } catch (err) {
-        res.send({ status: 'failed', message: "Something went wrong, please try again." });
+        res.send({ status: 'failed', message: err.message || "Something went wrong, please try again." });
     }
 });
 
@@ -110,9 +108,8 @@ router.post('/submitdocument', async (req, res) => {
         await document.save();
 
         res.end();
-    }
-    catch (err) {
-        res.send({ status: 'failed', message: err || "Something went wrong, please try again." });
+    } catch (err) {
+        res.send({ status: 'failed', message: err.message || "Something went wrong, please try again." });
     }
 });
 
@@ -122,7 +119,24 @@ router.post('/alldocuments', async (req, res) => {
         const documents = await Document.find({ userId }).exec();
         res.send({ documents });
     } catch (err) {
-        res.send({ status: 'failed', message: "Something went wrong, please try again." });
+        res.send({ status: 'failed', message: err.message || "Something went wrong, please try again." });
+    }
+});
+
+router.post('/generatecode', async (req, res) => {
+    try {
+        const { email } = req.body;
+        if (email == undefined || email == '') throw new Error('Please enter a valid email address!');
+        const oldCode = await Code.findOne({ email });
+        if (oldCode !== null) {
+            res.send({ specialCode: oldCode.specialCode });
+            return;
+        }
+        const specialCode = uuidv4();
+        await new Code({ specialCode, email }).save();
+        res.send({ specialCode });
+    } catch (err) {
+        res.send({ status: 'failed', message: err.message || "Something went wrong, please try again." });
     }
 });
 
@@ -134,7 +148,7 @@ router.get('/logout', async (req, res) => {
         await Token.findOneAndDelete({ sessionId }).exec();
         res.status(200).end();
     } catch (err) {
-        res.send({ status: 'failed', message: "Something went wrong, please try again." });
+        res.send({ status: 'failed', message: err.message || "Something went wrong, please try again." });
     }
 });
 

@@ -24,13 +24,12 @@ router.post('/track', async (req, res) => {
         const { documentId, name, visibility } = await Document.findOne({ trackingId });
 
         if (visibility == 'private') {
-            res.send({ status: 'failed', message: "The searched document is private. So you can not track the document." });
-            return;
+            throw new Error("The searched document is private. So you can not track the document.");
         }
 
         res.send({ documentId, trackingId, name });
     } catch (err) {
-        res.send({ status: 'failed', message: "Something went wrong, please try again." });
+        res.send({ status: 'failed', message: err.message || "Something went wrong, please try again." });
     }
 });
 
@@ -38,19 +37,16 @@ router.post('/login', async (req, res) => {
     try {
         const { email, password } = req.body;
         if (!validator.isEmail(email) || password == null || password == undefined) {
-            res.send({ status: 'failed', message: "Invalid email address or password!" });
-            return;
+            throw new Error("Invalid email address or password!");
         }
         const dbUser = await User.findOne({ email }).exec();
         if (dbUser == null) {
-            res.send({ status: 'failed', message: "User does not exist!" });
-            return;
+            throw new Error("User does not exist!");
         }
         const passwordMatch = await bcrypt.compare(password, dbUser.password);
 
         if (!passwordMatch) {
-            res.send({ status: 'failed', message: "Wrong password!" });
-            return;
+            throw new Error("Wrong password!");
         }
         if (dbUser.verified == false) {
             const mailOptions = {
@@ -59,8 +55,10 @@ router.post('/login', async (req, res) => {
                 text: `Hi ${dbUser.firstName} ${dbUser.lastName},\nPlease verify your account by clicking on the below link.\n${process.env.domainLink}verify/${dbUser.verificationId}`
             }
             sendMail(mailOptions);
-            res.send({ status: 'failed', message: "User email is not verified. Verification link sent on your email." });
-            return;
+            throw new Error("User email is not verified. Verification link sent on your email.");
+        }
+        if (dbUser.role == 'officer' && dbUser.officerVerified == false) {
+            throw new Error('Your account is not verified yet. Please wait while our administrators verify your account!');
         }
 
         const userId = dbUser.userId;
@@ -75,7 +73,7 @@ router.post('/login', async (req, res) => {
 
         res.status(200).end();
     } catch (err) {
-        res.send({ status: 'failed', message: "Something went wrong, please try again." });
+        res.send({ status: 'failed', message: err.message || "Something went wrong, please try again." });
     }
 });
 
@@ -86,7 +84,7 @@ router.get('/verify/:verificationId', async (req, res) => {
         if (user) res.sendFile(path.join(__dirname, 'htmls', 'verified.html'));
         else res.sendFile(path.join(__dirname, 'htmls', 'notverified.html'));
     } catch (err) {
-        res.send({ status: 'failed', message: "Something went wrong, please try again." });
+        res.send({ status: 'failed', message: err.message || "Something went wrong, please try again." });
     }
 });
 
@@ -108,7 +106,7 @@ router.post('/customer-signup', validateSignup, async (req, res) => {
 
         res.status(201).end();
     } catch (err) {
-        res.send({ status: 'failed', message: "Something went wrong, please try again." });
+        res.send({ status: 'failed', message: err.message || "Something went wrong, please try again." });
     }
 });
 
@@ -154,8 +152,7 @@ router.post('/officer-signup', validateSignup, async (req, res) => {
         blobStream.end(file.data);
 
     } catch (err) {
-        console.log(err);
-        res.send({ status: 'failed', message: "Something went wrong, please try again." });
+        res.send({ status: 'failed', message: err.message || "Something went wrong, please try again." });
     }
 });
 
@@ -165,8 +162,7 @@ router.post('/admin-signup', validateSignup, async (req, res) => {
 
         const codeExists = await Code.findOne({ email, specialCode }).exec();
         if (codeExists == null) {
-            res.send({ status: 'failed', message: "Special code is not valid!" });
-            return;
+            throw new Error("Special code is not valid!");
         }
 
         const userId = uuidv4();
@@ -183,7 +179,7 @@ router.post('/admin-signup', validateSignup, async (req, res) => {
 
         res.status(201).end();
     } catch (err) {
-        res.send({ status: 'failed', message: "Something went wrong, please try again." });
+        res.send({ status: 'failed', message: err.message || "Something went wrong, please try again." });
     }
 });
 

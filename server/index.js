@@ -43,7 +43,7 @@ app.get('/authenticate', async (req, res) => {
         }
         res.send({ user, valid });
     } catch (err) {
-        res.send({ status: 'failed', message: "Something went wrong, please try again." });
+        res.send({ status: 'failed', message: err.message || "Something went wrong, please try again." });
     }
 });
 
