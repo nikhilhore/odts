@@ -1,0 +1,7 @@
+#app {
+  background-image: url("./images/home_background.jpg");
+  height: 100vh;
+  /* background-position: center; */
+  background-repeat: repeat;
+  /* background-size: cover; */
+}

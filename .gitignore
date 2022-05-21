@@ -1,0 +1,5 @@
+/node_modules
+/server/node_modules
+/client/node_modules
+.env
+odts-346412-b49f147fb90f.json
