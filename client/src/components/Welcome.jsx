@@ -23,7 +23,7 @@ function Welcome() {
                     <h3>Manage and Track your official documents and get latest updates on each step</h3>
                     <div className="card card-body text-center bg-secondary">
                         <div className="form-group">
-                            <label className="lead">Already have a document tracking ID?</label>
+                            <label className="lead text-dark font-weight-bold">Already have a document tracking ID?</label>
                             <div className="input-group">
                                 <input id="tracking-id" type="text" placeholder="Enter tracking ID" className="form-control" />
                                 <button id="track-btn" className="btn btn-primary btn-block">Track</button>

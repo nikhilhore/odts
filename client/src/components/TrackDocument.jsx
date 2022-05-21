@@ -20,16 +20,32 @@ function TrackDocument(props) {
             document.querySelector('#view-button').addEventListener('click', () => {
                 window.open(userDocument.publicUrl);
             });
-            const ul = document.getElementById('document-status');
-            userDocument.offices.forEach(office => {
-                const li = document.createElement('li');
+            const tbody = document.getElementById('table-body');
+            let cnt = 1;
+            userDocument.offices.forEach(async (office) => {
+                const trow = document.createElement('tr');
+
                 let status = 'pending';
-                if (office.status==true) status = 'approved';
-                else if (office.status==false) status = 'rejected';
-                li.innerText = office.officeId + " " + status;
-                ul.append(li);
+                if (office.status == true) status = 'approved';
+                else if (office.status == false) status = 'rejected';
+
+                const officeName = (await axios.post('/getoffice', { officeId: office.officeId })).data.name;
+
+                const th = document.createElement('th');
+                th.scope = "row";
+                th.innerText = cnt;
+                cnt = cnt + 1;
+
+                const td1 = document.createElement('td');
+                td1.innerText = officeName;
+                const td2 = document.createElement('td');
+                td2.innerText = status;
+                const td3 = document.createElement('td');
+                td3.innerText = "";
+
+                trow.append(th, td1, td2, td3);
+                tbody.append(trow);
             });
-            
         }
     }, []);
     return <>
@@ -39,9 +55,19 @@ function TrackDocument(props) {
                     <h1 className="mt-3">Track Document</h1>
                     <div className="form-group m-1" id="error-box"></div>
                     <h3 className="mt-3" id="document-name">Document Name</h3>
-                    <button className="btn btn-light" id="view-button">View</button>
-                    <ul className="me-auto mb-2 mb-lg-0 mt-3" id="document-status">
-                    </ul>
+                    <button className="btn btn-primary" id="view-button">View</button>
+                    <table className="table me-auto mb-2 mb-lg-0 mt-3">
+                        <thead className="thead-dark">
+                            <tr>
+                                <th scope="col">#</th>
+                                <th scope="col">Office Name</th>
+                                <th scope="col">Status</th>
+                                <th scope="col">Remark</th>
+                            </tr>
+                        </thead>
+                        <tbody id="table-body">
+                        </tbody>
+                    </table>
                 </div>
             </div>
         </div>

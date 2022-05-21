@@ -26,4 +26,10 @@ router.post('/offices', async (req, res) => {
     res.send(offices);
 });
 
+router.post('/getoffice', async (req, res) => {
+    const { officeId } = req.body;
+    const office = await Office.findOne({ officeId }).exec();
+    res.send(office);
+});
+
 module.exports = router;

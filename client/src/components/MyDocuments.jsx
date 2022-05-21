@@ -27,7 +27,7 @@ function MyDocuments(props) {
 
                 const viewBtn = document.createElement('button');
                 viewBtn.type = 'button';
-                viewBtn.classList.add('btn', 'btn-light');
+                viewBtn.classList.add('btn', 'btn-primary');
                 viewBtn.innerText = 'View';
                 viewBtn.style.margin = '5px';
                 viewBtn.addEventListener('click', () => {
