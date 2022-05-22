@@ -34,6 +34,9 @@ function AppHeader(props) {
                                 <NavLink className="nav-link" to="/changepassword">Change Password</NavLink>
                             </li>
                             <li className="nav-item">
+                                <NavLink className="nav-link" to="/deleteaccount">Delete Account</NavLink>
+                            </li>
+                            <li className="nav-item">
                                 <NavLink className="nav-link" to="/logout">Logout</NavLink>
                             </li>
                         </ul>
@@ -62,14 +65,15 @@ function AppHeader(props) {
                             <li className="nav-item">
                                 <NavLink className="nav-link" to="/verifyofficers">Verify Officers</NavLink>
                             </li>
-                            <li className="nav-item">
-                                <NavLink className="nav-link" to="/editprofile">Edit Profile</NavLink>
-                            </li>
-                            <li className="nav-item">
-                                <NavLink className="nav-link" to="/changepassword">Change Password</NavLink>
-                            </li>
-                            <li className="nav-item">
-                                <NavLink className="nav-link" to="/logout">Logout</NavLink>
+                            <li className="nav-item dropdown">
+                                <div className="nav-link dropdown-toggle" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">More</div>
+                                <div className="dropdown-menu" aria-labelledby="navbarDropdown">
+                                    <NavLink className="dropdown-item" to="/editprofile">Edit Profile</NavLink>
+                                    <NavLink className="dropdown-item" to="/changepassword">Change Password</NavLink>
+                                    <div className="dropdown-divider"></div>
+                                    <NavLink className="dropdown-item" to="/deleteaccount">Delete Account</NavLink>
+                                    <NavLink className="dropdown-item" to="/logout">Logout</NavLink>
+                                </div>
                             </li>
                         </ul>
                         <form className="d-flex">
@@ -100,14 +104,15 @@ function AppHeader(props) {
                         <li className="nav-item">
                             <NavLink className="nav-link" to="/submitdocument">Submit Document</NavLink>
                         </li>
-                        <li className="nav-item">
-                            <NavLink className="nav-link" to="/editprofile">Edit Profile</NavLink>
-                        </li>
-                        <li className="nav-item">
-                            <NavLink className="nav-link" to="/changepassword">Change Password</NavLink>
-                        </li>
-                        <li className="nav-item">
-                            <NavLink className="nav-link" to="/logout">Logout</NavLink>
+                        <li className="nav-item dropdown">
+                            <div className="nav-link dropdown-toggle" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">More</div>
+                            <div className="dropdown-menu" aria-labelledby="navbarDropdown">
+                                <NavLink className="dropdown-item" to="/editprofile">Edit Profile</NavLink>
+                                <NavLink className="dropdown-item" to="/changepassword">Change Password</NavLink>
+                                <div className="dropdown-divider"></div>
+                                <NavLink className="dropdown-item" to="/deleteaccount">Delete Account</NavLink>
+                                <NavLink className="dropdown-item" to="/logout">Logout</NavLink>
+                            </div>
                         </li>
                     </ul>
                     <form className="d-flex">

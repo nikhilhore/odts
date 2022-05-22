@@ -235,4 +235,27 @@ router.post('/editprofile', async (req, res) => {
     }
 });
 
+router.post('/deleteaccount', async (req, res) => {
+    try {
+        const { userId, email, password } = req.body;
+        const dbUser = await User.findOne({ userId, email });
+        if (dbUser == null) {
+            throw new Error("User does not exist!");
+        }
+        const passwordMatch = await bcrypt.compare(password, dbUser.password);
+        if (!passwordMatch) {
+            throw new Error("Wrong password!");
+        }
+
+        await User.findOneAndDelete({ userId, email });
+        await Token.deleteMany({ userId });
+        await Code.findOneAndDelete({ email });
+        await Document.deleteMany({ userId });
+
+        res.status(200).end();
+    } catch (err) {
+        res.send({ status: 'failed', message: err.message || "Something went wrong, please try again." });
+    }
+});
+
 module.exports = router;
