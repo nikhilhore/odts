@@ -93,7 +93,7 @@ function AppHeader(props) {
                             <NavLink className="nav-link" to="/mydocuments">My Documents</NavLink>
                         </li>
                         <li className="nav-item">
-                            <NavLink className="nav-link" to="/createdocument">Create Document</NavLink>
+                            <NavLink className="nav-link" to="/createdocument">Upload Document</NavLink>
                         </li>
                         <li className="nav-item">
                             <NavLink className="nav-link" to="/submitdocument">Submit Document</NavLink>

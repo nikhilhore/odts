@@ -16,6 +16,9 @@ const validateSignup = async (req, res, next) => {
         if (!validator.isEmail(email)) {
             throw new Error("Email address is invalid!");
         }
+        if (!validator.isNumeric(phone) || phone.length !=10){
+            throw new Error("Phone number must be numeric characters only with total length of 10 digits.")
+        }
         const userExists = await User.findOne({ email }).exec();
         if (userExists != null) {
             throw new Error("User already exists!");

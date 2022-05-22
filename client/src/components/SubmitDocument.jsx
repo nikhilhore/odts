@@ -192,7 +192,7 @@ function SubmitDocument(props) {
                         <div className="text-center d-flex justify-content-between m-1 mt-2">
                             <button type="submit" id="submit-btn" className="btn btn-primary btn-block">Submit</button>
                             <p className="lead m-1">
-                                No Document? <Link to="/createdocument">Create Document</Link>
+                                Don't have a document? <Link to="/createdocument">Create Document</Link>
                             </p>
                         </div>
                     </div>

@@ -42,7 +42,7 @@ function Login() {
                         <div className="text-center d-flex justify-content-between m-1 mt-2">
                             <button type="submit" id="login-btn" className="btn btn-primary btn-block">Login</button>
                             <p className="lead m-1">
-                                No Account? <Link to="/customer-signup">Signup</Link>
+                                Don't have an account? <Link to="/customer-signup">Signup</Link>
                             </p>
                         </div>
                     </div>

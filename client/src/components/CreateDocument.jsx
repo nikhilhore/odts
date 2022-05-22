@@ -37,7 +37,7 @@ function CreateDocument(props) {
             <div className="col-md-6 m-auto">
                 <div className="card card-body bg-light">
                     <h1 className="text-center m-2">
-                        <i className="fas fa-user-plus"></i> Create Document
+                        <i className="fas fa-user-plus"></i> Upload Document
                     </h1>
                     <div className="m-2">
                         <div className="form-group m-1" id="error-box"></div>
