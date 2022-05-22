@@ -57,8 +57,14 @@ router.post('/login', async (req, res) => {
             sendMail(mailOptions);
             throw new Error("User email is not verified. Verification link sent on your email.");
         }
-        if (dbUser.role == 'officer' && dbUser.officerVerified == false) {
-            throw new Error('Your account is not verified yet. Please wait while our administrators verify your account!');
+
+        if (dbUser.role == 'officer') {
+            if (dbUser.officerVerified == 'pending') {
+                throw new Error('Your account is not verified yet. Please wait while our administrators verify your account!');
+            }
+            if (dbUser.officerVerified == 'rejected') {
+                throw new Error(`Your account verification got rejected! Please edit the application. <a href="/editofficer/${dbUser.userId}">Click here!</a>`);
+            }
         }
 
         const userId = dbUser.userId;
@@ -137,7 +143,7 @@ router.post('/officer-signup', validateSignup, async (req, res) => {
 
             const userId = uuidv4();
             const verificationId = uuidv4();
-            const newUser = new User({ userId, role, firstName, lastName, email, phone, password, verificationId, verified: false, officerVerified: false, publicUrl });
+            const newUser = new User({ userId, role, firstName, lastName, email, phone, password, verificationId, verified: false, officerVerified: 'pending', publicUrl });
             await newUser.save();
 
             const mailOptions = {
@@ -178,6 +184,53 @@ router.post('/admin-signup', validateSignup, async (req, res) => {
         sendMail(mailOptions);
 
         res.status(201).end();
+    } catch (err) {
+        res.send({ status: 'failed', message: err.message || "Something went wrong, please try again." });
+    }
+});
+
+router.post('/getuser', async (req, res) => {
+    try {
+        const { userId } = req.body;
+        const user = await User.findOne({ userId });
+        res.send({ user });
+    } catch (err) {
+        res.send({ status: 'failed', message: err.message || "Something went wrong, please try again." });
+    }
+});
+
+router.post('/editofficer', async (req, res) => {
+    try {
+        const file = req.files.file;
+        const { userId, role, firstName, lastName, email, phone, password } = req.body;
+
+        const documentId = uuidv4();
+        const fileName = documentId + "_" + file.name;
+
+        const blob = docsBucket.file(fileName);
+        const blobStream = blob.createWriteStream({
+            resumable: false
+        });
+
+        blobStream.on('finish', async () => {
+            const publicUrl = format(`https://storage.googleapis.com/${process.env.docsBucketName}/${blob.name}`);
+
+            const dbUser = await User.findOne({ userId, email }).exec();
+            if (dbUser == null) {
+                throw new Error("User does not exist!");
+            }
+            const passwordMatch = await bcrypt.compare(password, dbUser.password);
+
+            if (!passwordMatch) {
+                throw new Error("Wrong password!");
+            }
+
+            await User.findOneAndUpdate({ userId, email }, { firstName, lastName, phone, publicUrl, officerVerified: 'pending' });
+
+            res.status(201).end();
+        });
+        blobStream.end(file.data);
+
     } catch (err) {
         res.send({ status: 'failed', message: err.message || "Something went wrong, please try again." });
     }

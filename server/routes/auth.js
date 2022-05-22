@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const { v4: uuidv4 } = require('uuid');
+const bcrypt = require('bcryptjs');
 require('dotenv').config();
 const { Storage } = require('@google-cloud/storage');
 const { format } = require('util');
@@ -9,6 +10,7 @@ const path = require('path');
 const Document = require('./../models/Document');
 const Token = require('./../models/Token');
 const Code = require('./../models/Code');
+const User = require('./../models/User');
 
 const sendMail = require('./../functions/sendMail');
 
@@ -140,6 +142,38 @@ router.post('/generatecode', async (req, res) => {
     }
 });
 
+router.post('/pendingofficers', async (req, res) => {
+    try {
+        const { userId } = req.body;
+        const officers = await User.find({ role: 'officer', officerVerified: 'pending' }).limit(10);
+        res.send({ officers });
+    } catch (err) {
+        res.send({ status: 'failed', message: err.message || "Something went wrong, please try again." });
+    }
+});
+
+router.post('/verifyofficer', async (req, res) => {
+    try {
+        const { userId, officerId } = req.body;
+        const user = await User.findOneAndUpdate({ userId: officerId }, { officerVerified: 'accepted', verifiedBy: userId }, { new: true }).exec();
+        if (user.officerVerified == 'pending') throw new Error('Sorry, Could not verify user. Something went wrong!');
+        res.send('success');
+    } catch (err) {
+        res.send({ status: 'failed', message: err.message || "Something went wrong, please try again." });
+    }
+});
+
+router.post('/rejectofficer', async (req, res) => {
+    try {
+        const { userId, officerId } = req.body;
+        const user = await User.findOneAndUpdate({ userId: officerId }, { officerVerified: 'rejected', verifiedBy: userId }, { new: true }).exec();
+        if (user.officerVerified == 'pending') throw new Error('Sorry, Could not verify user. Something went wrong!');
+        res.send('success');
+    } catch (err) {
+        res.send({ status: 'failed', message: err.message || "Something went wrong, please try again." });
+    }
+});
+
 router.get('/logout', async (req, res) => {
     try {
         const { sessionId } = req.cookies;
@@ -147,6 +181,55 @@ router.get('/logout', async (req, res) => {
         res.clearCookie('tokenId');
         await Token.findOneAndDelete({ sessionId }).exec();
         res.status(200).end();
+    } catch (err) {
+        res.send({ status: 'failed', message: err.message || "Something went wrong, please try again." });
+    }
+});
+
+router.post('/changepassword', async (req, res) => {
+    try {
+        const { email, oldpassword, password, cpassword } = req.body;
+
+        const dbUser = await User.findOne({ email }).exec();
+        if (dbUser == null) {
+            throw new Error("User does not exist!");
+        }
+
+        const passwordMatch = await bcrypt.compare(oldpassword, dbUser.password);
+        if (!passwordMatch) {
+            throw new Error("Wrong password!");
+        }
+        if (password != cpassword) {
+            throw new Error("Passwords do not match");
+        }
+
+        const Salt = await bcrypt.genSalt(10);
+        const hashedPassword = await bcrypt.hash(password, Salt);
+
+        await User.findOneAndUpdate({ email }, { password: hashedPassword });
+
+        res.status(201).send();
+    } catch (err) {
+        res.send({ status: 'failed', message: err.message || "Something went wrong, please try again." });
+    }
+});
+
+router.post('/editprofile', async (req, res) => {
+    try {
+        const { firstName, lastName, email, phone, password } = req.body;
+        const dbUser = await User.findOne({ email }).exec();
+        if (dbUser == null) {
+            throw new Error("User does not exist!");
+        }
+
+        const passwordMatch = await bcrypt.compare(password, dbUser.password);
+        if (!passwordMatch) {
+            throw new Error("Wrong password!");
+        }
+
+        await User.findOneAndUpdate({ email }, { firstName, lastName, phone });
+
+        res.status(201).send();
     } catch (err) {
         res.send({ status: 'failed', message: err.message || "Something went wrong, please try again." });
     }

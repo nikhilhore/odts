@@ -42,7 +42,11 @@ const userSchema = mongoose.Schema({
         default: false
     },
     officerVerified: {
-        type: Boolean,
+        type: String,
+        required: false
+    },
+    verifiedBy: {
+        type: String,
         required: false
     },
     publicUrl: {

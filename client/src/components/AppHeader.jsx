@@ -6,7 +6,7 @@ const header = {
 }
 
 function AppHeader(props) {
-    const {role} = props;
+    const { role } = props;
     if (role === 'officer') {
         return <>
             <nav className="navbar navbar-expand-lg navbar-dark bg-primary" style={header.sticky}>
@@ -26,6 +26,12 @@ function AppHeader(props) {
                             </li>
                             <li className="nav-item">
                                 <NavLink className="nav-link" to="/submitdocument">Submit Document</NavLink>
+                            </li>
+                            <li className="nav-item">
+                                <NavLink className="nav-link" to="/editprofile">Edit Profile</NavLink>
+                            </li>
+                            <li className="nav-item">
+                                <NavLink className="nav-link" to="/changepassword">Change Password</NavLink>
                             </li>
                             <li className="nav-item">
                                 <NavLink className="nav-link" to="/logout">Logout</NavLink>
@@ -52,6 +58,15 @@ function AppHeader(props) {
                         <ul className="navbar-nav me-auto mb-2 mb-lg-0">
                             <li className="nav-item">
                                 <NavLink className="nav-link" to="/generatecode">Generate Code</NavLink>
+                            </li>
+                            <li className="nav-item">
+                                <NavLink className="nav-link" to="/verifyofficers">Verify Officers</NavLink>
+                            </li>
+                            <li className="nav-item">
+                                <NavLink className="nav-link" to="/editprofile">Edit Profile</NavLink>
+                            </li>
+                            <li className="nav-item">
+                                <NavLink className="nav-link" to="/changepassword">Change Password</NavLink>
                             </li>
                             <li className="nav-item">
                                 <NavLink className="nav-link" to="/logout">Logout</NavLink>
@@ -84,6 +99,12 @@ function AppHeader(props) {
                         </li>
                         <li className="nav-item">
                             <NavLink className="nav-link" to="/submitdocument">Submit Document</NavLink>
+                        </li>
+                        <li className="nav-item">
+                            <NavLink className="nav-link" to="/editprofile">Edit Profile</NavLink>
+                        </li>
+                        <li className="nav-item">
+                            <NavLink className="nav-link" to="/changepassword">Change Password</NavLink>
                         </li>
                         <li className="nav-item">
                             <NavLink className="nav-link" to="/logout">Logout</NavLink>

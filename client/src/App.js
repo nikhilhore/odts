@@ -9,6 +9,10 @@ import './App.css';
 import SubmitDocument from './components/SubmitDocument';
 import TrackDocument from './components/TrackDocument';
 import GenerateCode from './components/GenerateCode';
+import VerifyOfficers from './components/VerifyOfficers';
+import EditProfile from './components/EditProfile';
+import ChangePassword from './components/ChangePassword';
+import EditOfficer from './components/EditOfficer';
 
 function App(props) {
   const role = props.user.role;
@@ -20,6 +24,8 @@ function App(props) {
           <Routes>
             <Route exact path="/" element={<Dashboard user={props.user} />} />
             <Route exact path="/alldocuments" element={<AllDocuments user={props.user} />} />
+            <Route exact path="/editprofile" element={<EditOfficer user={props.user} />} />
+            <Route exact path="/changepassword" element={<ChangePassword user={props.user} />} />
             <Route exact path="/logout" element={<Logout />} />
           </Routes>
         </BrowserRouter>
@@ -32,7 +38,10 @@ function App(props) {
           <AppHeader role='admin' />
           <Routes>
             <Route exact path="/" element={<Dashboard user={props.user} />} />
+            <Route exact path="/verifyofficers" element={<VerifyOfficers user={props.user} />} />
             <Route exact path="/generatecode" element={<GenerateCode user={props.user} />} />
+            <Route exact path="/editprofile" element={<EditProfile user={props.user} />} />
+            <Route exact path="/changepassword" element={<ChangePassword user={props.user} />} />
             <Route exact path="/logout" element={<Logout />} />
           </Routes>
         </BrowserRouter>
@@ -49,6 +58,8 @@ function App(props) {
           <Route exact path="/mydocuments" element={<MyDocuments user={props.user} />} />
           <Route exact path="/submitdocument" element={<SubmitDocument user={props.user} />} />
           <Route exact path="/trackdocument/:documentId" element={<TrackDocument user={props.user} />} />
+          <Route exact path="/editprofile" element={<EditProfile user={props.user} />} />
+          <Route exact path="/changepassword" element={<ChangePassword user={props.user} />} />
           <Route exact path="/logout" element={<Logout />} />
         </Routes>
       </BrowserRouter>
