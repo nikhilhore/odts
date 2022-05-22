@@ -24,7 +24,7 @@ function VerifyOfficers(props) {
                 const listItem = document.createElement('li');
 
                 const description = document.createElement('p');
-                description.innerText = `Name: ${officer.firstName} ${officer.lastName}\nEmail: ${officer.email}\nPhone: ${officer.phone}`;
+                description.innerText = `Name: ${officer.firstName} ${officer.lastName}\nEmail: ${officer.email}\nPhone: ${officer.phone}\nOffice Id: ${officer.officeId}`;
 
                 const viewBtn = document.createElement('button');
                 viewBtn.type = 'button';

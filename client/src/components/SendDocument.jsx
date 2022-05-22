@@ -1,40 +1,14 @@
 import React from "react";
-import { Link } from 'react-router-dom';
 import axios from 'axios';
 
-function SubmitDocument(props) {
+function SendDocument(props) {
 
     const { user } = props;
     React.useEffect(async () => {
-        const documentList = document.querySelector('#select-document');
         const stateList = document.querySelector('#state');
         const districtList = document.querySelector('#district');
         const subDistrictList = document.querySelector('#sub-district');
         const officeList = document.querySelector('#office');
-
-        (async function getDocuments() {
-            const response = await axios.post('/mydocuments', { userId: user.userId });
-            if (response.data.status === 'failed') {
-                const errorBox = document.getElementById('error-box');
-                errorBox.innerHTML = `<div class="alert alert-danger alert-dismissible fade show" role="alert">
-                ${response.data.message}
-                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                </div>`;
-            }
-            else {
-                const { data } = response;
-                const userDocuments = data.documents;
-
-                documentList.innerHTML = '<option>Select a document</option>';
-
-                userDocuments.forEach(userDocument => {
-                    const option = document.createElement('option');
-                    option.innerText = userDocument.name;
-                    option.value = userDocument.documentId;
-                    documentList.appendChild(option);
-                });
-            }
-        }());
 
         (async function getStates() {
             const response = await axios.get('/states');
@@ -139,12 +113,19 @@ function SubmitDocument(props) {
         districtList.addEventListener('change', getSubDistricts);
         subDistrictList.addEventListener('change', getOffices);
 
-        const submitBtn = document.getElementById('submit-btn');
+        const sendBtn = document.getElementById('send-btn');
 
-        submitBtn.addEventListener('click', async () => {
-            const documentId = document.getElementById('select-document').value;
+        sendBtn.addEventListener('click', async () => {
+            const documentId = window.location.pathname.substring(14,);
+            let status = 'unrelated';
+            const radioIds = ['inlineRadio1', 'inlineRadio2', 'inlineRadio3'];
+            radioIds.forEach(radioId => {
+                const radioBtn = document.getElementById(radioId);
+                if (radioBtn.checked) status = radioBtn.value;
+            });
+            const remark = document.getElementById('remark').value;
             const officeId = document.getElementById('office').value;
-            const response = await axios.post('/submitdocument', { officeId, documentId });
+            const response = await axios.post('/senddocument', { status, remark, officeId, documentId });
             if (response.data.status === 'failed') {
                 const errorBox = document.getElementById('error-box');
                 errorBox.innerHTML = `<div class="alert alert-danger alert-dismissible fade show" role="alert">
@@ -161,12 +142,27 @@ function SubmitDocument(props) {
         <div className="mt-5">
             <div className="col-md-6 m-auto">
                 <div className="card card-body bg-light">
-                    <h1 className="text-center m-2"><i className="fas fa-sign-in-alt"></i> Submit Document</h1>
-                    <div className="form-group m-1" id="error-box"></div>
+                    <h1 className="text-center m-2"><i className="fas fa-sign-in-alt"></i> Send Document</h1>
                     <div className="form-group m-1">
-                        <label htmlFor="select-document">Document</label>
-                        <select className="form-select" name="select-document" id="select-document">
-                        </select>
+                        <label htmlFor="select-document">Select acceptance status</label>
+                        <div>
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="radio" name="inlineRadioOptions" id="inlineRadio1" value="accepted" />
+                                <label class="form-check-label" for="inlineRadio1">Accept</label>
+                            </div>
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="radio" name="inlineRadioOptions" id="inlineRadio2" value="rejected" />
+                                <label class="form-check-label" for="inlineRadio2">Reject</label>
+                            </div>
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="radio" name="inlineRadioOptions" id="inlineRadio3" value="unrelated" />
+                                <label class="form-check-label" for="inlineRadio3">Not related to my office</label>
+                            </div>
+                        </div>
+                    </div>
+                    <div className="form-group m-1">
+                        <label htmlFor="remark">Remark</label>
+                        <input type="text" id="remark" name="remark" className="form-control" placeholder="Enter ramarks if any" />
                     </div>
                     <div className="form-group m-1">
                         <label htmlFor="state">State</label>
@@ -189,11 +185,9 @@ function SubmitDocument(props) {
                         </select>
                     </div>
                     <div className="m-2">
+                        <div className="form-group m-1" id="error-box"></div>
                         <div className="text-center d-flex justify-content-between m-1 mt-2">
-                            <button type="submit" id="submit-btn" className="btn btn-primary btn-block">Submit</button>
-                            <p className="lead m-1">
-                                No Document? <Link to="/createdocument">Create Document</Link>
-                            </p>
+                            <button type="submit" id="send-btn" className="btn btn-primary btn-block">Send</button>
                         </div>
                     </div>
                 </div>
@@ -202,4 +196,4 @@ function SubmitDocument(props) {
     </>
 }
 
-export default SubmitDocument;
+export default SendDocument;

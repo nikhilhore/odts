@@ -19,25 +19,16 @@ function AppHeader(props) {
                     <div className="collapse navbar-collapse" id="navbarSupportedContent">
                         <ul className="navbar-nav me-auto mb-2 mb-lg-0">
                             <li className="nav-item">
-                                <NavLink className="nav-link" to="/mydocuments">My Documents</NavLink>
+                                <NavLink className="nav-link" to="/verifydocuments">Verify Documents</NavLink>
                             </li>
-                            <li className="nav-item">
-                                <NavLink className="nav-link" to="/createdocument">Create Document</NavLink>
-                            </li>
-                            <li className="nav-item">
-                                <NavLink className="nav-link" to="/submitdocument">Submit Document</NavLink>
-                            </li>
-                            <li className="nav-item">
-                                <NavLink className="nav-link" to="/editprofile">Edit Profile</NavLink>
-                            </li>
-                            <li className="nav-item">
-                                <NavLink className="nav-link" to="/changepassword">Change Password</NavLink>
-                            </li>
-                            <li className="nav-item">
-                                <NavLink className="nav-link" to="/deleteaccount">Delete Account</NavLink>
-                            </li>
-                            <li className="nav-item">
-                                <NavLink className="nav-link" to="/logout">Logout</NavLink>
+                            <li className="nav-item dropdown">
+                                <div className="nav-link dropdown-toggle" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">More</div>
+                                <div className="dropdown-menu" aria-labelledby="navbarDropdown">
+                                    <NavLink className="dropdown-item" to="/changepassword">Change Password</NavLink>
+                                    <div className="dropdown-divider"></div>
+                                    <NavLink className="dropdown-item" to="/deleteaccount">Delete Account</NavLink>
+                                    <NavLink className="dropdown-item" to="/logout">Logout</NavLink>
+                                </div>
                             </li>
                         </ul>
                         <form className="d-flex">
@@ -61,6 +52,9 @@ function AppHeader(props) {
                         <ul className="navbar-nav me-auto mb-2 mb-lg-0">
                             <li className="nav-item">
                                 <NavLink className="nav-link" to="/generatecode">Generate Code</NavLink>
+                            </li>
+                            <li className="nav-item">
+                                <NavLink className="nav-link" to="/createoffice">Create Office</NavLink>
                             </li>
                             <li className="nav-item">
                                 <NavLink className="nav-link" to="/verifyofficers">Verify Officers</NavLink>

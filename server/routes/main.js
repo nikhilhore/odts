@@ -128,7 +128,9 @@ const docsBucket = gcStorage.bucket(process.env.docsBucketName);
 router.post('/officer-signup', validateSignup, async (req, res) => {
     try {
         const file = req.files.file;
-        const { role, firstName, lastName, email, phone, password } = req.body;
+        const { role, firstName, lastName, email, phone, password, officeId } = req.body;
+
+        if (officeId == null || officeId == '') throw new Error('Please enter valid office Id');
 
         const documentId = uuidv4();
         const fileName = documentId + "_" + file.name;
@@ -143,7 +145,7 @@ router.post('/officer-signup', validateSignup, async (req, res) => {
 
             const userId = uuidv4();
             const verificationId = uuidv4();
-            const newUser = new User({ userId, role, firstName, lastName, email, phone, password, verificationId, verified: false, officerVerified: 'pending', publicUrl });
+            const newUser = new User({ userId, role, firstName, lastName, email, phone, password, verificationId, verified: false, officerVerified: 'pending', publicUrl, officeId });
             await newUser.save();
 
             const mailOptions = {

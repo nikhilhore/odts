@@ -45,6 +45,10 @@ const userSchema = mongoose.Schema({
         type: String,
         required: false
     },
+    officeId: {
+        type: String,
+        required: false
+    },
     verifiedBy: {
         type: String,
         required: false

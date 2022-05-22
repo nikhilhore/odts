@@ -11,6 +11,7 @@ const Document = require('./../models/Document');
 const Token = require('./../models/Token');
 const Code = require('./../models/Code');
 const User = require('./../models/User');
+const Office = require('./../models/Office');
 
 const sendMail = require('./../functions/sendMail');
 
@@ -106,7 +107,10 @@ router.post('/submitdocument', async (req, res) => {
         if (document === null) {
             throw new Error("No document found with the given document Id");
         }
-        document.offices = [{ officeId, status: null }];
+        document.offices.push({ officeId, status: 'pending' });
+        document.currentOffice = officeId;
+        document.status = 'pending';
+
         await document.save();
 
         res.end();
@@ -115,11 +119,83 @@ router.post('/submitdocument', async (req, res) => {
     }
 });
 
-router.post('/alldocuments', async (req, res) => {
+router.post('/pendingdocuments', async (req, res) => {
     try {
-        const { userId } = req.body;
-        const documents = await Document.find({ userId }).exec();
+        const { userId, officeId } = req.body;
+
+        const dbUser = await User.findOne({ role: 'officer', userId, officeId }).exec();
+        if (dbUser == null) {
+            throw new Error("User does not exist!");
+        }
+
+        const documents = await Document.find({ status: 'pending', currentOffice: dbUser.officeId }).limit(10);
+
         res.send({ documents });
+    } catch (err) {
+        res.send({ status: 'failed', message: err.message || "Something went wrong, please try again." });
+    }
+});
+
+router.post('/verifydocument', async (req, res) => {
+    try {
+        const { userId, documentId, remark } = req.body;
+        const document = await Document.findOneAndUpdate({ documentId }, { status: 'accepted', verifiedBy: userId }, { new: true });
+        if (document.status == 'pending') throw new Error('Sorry, Could not verify document. Something went wrong!');
+
+        document.offices[document.offices.length - 1].status = 'accepted';
+        document.offices[document.offices.length - 1].remark = remark;
+
+        await Document.findOneAndUpdate({ documentId }, { offices: document.offices });
+
+        res.send('success');
+    } catch (err) {
+        res.send({ status: 'failed', message: err.message || "Something went wrong, please try again." });
+    }
+});
+
+router.post('/rejectdocument', async (req, res) => {
+    try {
+        const { userId, documentId, remark } = req.body;
+        const document = await Document.findOneAndUpdate({ documentId }, { status: 'rejected', verifiedBy: userId }, { new: true });
+        if (document.status == 'pending') throw new Error('Sorry, Could not reject document. Something went wrong!');
+
+        document.offices[document.offices.length - 1].status = 'rejected';
+        document.offices[document.offices.length - 1].remark = remark;
+
+        await Document.findOneAndUpdate({ documentId }, { offices: document.offices });
+
+        res.send('success');
+    } catch (err) {
+        res.send({ status: 'failed', message: err.message || "Something went wrong, please try again." });
+    }
+});
+
+router.post('/senddocument', async (req, res) => {
+    try {
+        const { status, remark, documentId, officeId } = req.body;
+
+        if (remark == undefined || remark == null) remark = '';
+
+        if (documentId === undefined || documentId === "") {
+            throw new Error("Invalid document Id");
+        } else if (officeId === undefined || officeId === "") {
+            throw new Error("Invalid office Id");
+        }
+
+        const document = await Document.findOne({ documentId });
+
+        if (document === null) {
+            throw new Error("No document found with the given document Id");
+        }
+
+        document.offices[document.offices.length - 1].status = status;
+        document.offices[document.offices.length - 1].remark = remark;
+
+        document.offices.push({ officeId, status: 'pending' });
+
+        await Document.findOneAndUpdate({ documentId }, { offices: document.offices, currentOffice: officeId });
+
+        res.end();
     } catch (err) {
         res.send({ status: 'failed', message: err.message || "Something went wrong, please try again." });
     }
@@ -137,6 +213,29 @@ router.post('/generatecode', async (req, res) => {
         const specialCode = uuidv4();
         await new Code({ specialCode, email }).save();
         res.send({ specialCode });
+    } catch (err) {
+        res.send({ status: 'failed', message: err.message || "Something went wrong, please try again." });
+    }
+});
+
+router.post('/createoffice', async (req, res) => {
+    try {
+        const { officeId, state, district, subDistrict, name } = req.body;
+
+        if (officeId == null || officeId == '' || state == '' || state == null || state == 'Select a state' || district == '' || district == null || district == 'Select a district' || subDistrict == '' || subDistrict == null || subDistrict == 'Select a sub-district' || name == '' || name == null) {
+            throw new Error('Please enter all the fields below');
+        }
+
+        const oldOffice = await Office.findOne({ officeId }).exec();
+
+        if (oldOffice != null) {
+            throw new Error('This office already exist');
+        }
+
+        await new Office({ officeId, state, district, subDistrict, name }).save();
+
+        res.status(201).send();
+
     } catch (err) {
         res.send({ status: 'failed', message: err.message || "Something went wrong, please try again." });
     }

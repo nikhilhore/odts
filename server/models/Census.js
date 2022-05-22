@@ -17,4 +17,4 @@ const censusSchema = mongoose.Schema({
 
 const Census = new mongoose.model('Census', censusSchema);
 
-module.exports = { Census };
+module.exports = Census;

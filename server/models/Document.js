@@ -24,6 +24,18 @@ const documentSchema = mongoose.Schema({
     offices: {
         type: Array,
         required: false
+    },
+    currentOffice: {
+        type: String,
+        required: false
+    },
+    status: {
+        type: String,
+        required: false
+    },
+    verifiedBy: {
+        type: String,
+        required: false
     }
 });
 

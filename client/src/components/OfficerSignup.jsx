@@ -15,6 +15,7 @@ function OfficerSignup() {
             const phone = document.getElementById('phone').value;
             const password = document.getElementById('password').value;
             const cpassword = document.getElementById('cpassword').value;
+            const officeId = document.getElementById('officeId').value;
             const file = document.getElementById('document-file').files[0];
 
             const formData = new FormData();
@@ -26,6 +27,7 @@ function OfficerSignup() {
             formData.append('phone', phone);
             formData.append('password', password);
             formData.append('cpassword', cpassword);
+            formData.append('officeId', officeId);
 
             const response = await axios.post('/officer-signup', formData);
             if (response.data.status === 'failed') {
@@ -78,6 +80,10 @@ function OfficerSignup() {
                             <label htmlFor="cpassword">Confirm Password</label>
                             <input type="password" id="cpassword" name="cpassword" className="form-control"
                                 placeholder="Confirm Password" />
+                        </div>
+                        <div className="form-group m-1">
+                            <label htmlFor="officeId">Office Id</label>
+                            <input type="officeId" id="officeId" name="officeId" className="form-control" placeholder="Enter office Id" />
                         </div>
                         <div className="form-group m-1">
                             <label htmlFor="document-file">Upload office Identity card(max. size 10MB)</label>

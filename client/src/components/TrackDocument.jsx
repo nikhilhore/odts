@@ -25,9 +25,8 @@ function TrackDocument(props) {
             userDocument.offices.forEach(async (office) => {
                 const trow = document.createElement('tr');
 
-                let status = 'pending';
-                if (office.status == true) status = 'approved';
-                else if (office.status == false) status = 'rejected';
+                const status = office.status;
+                const remark = office.remark;
 
                 const officeName = (await axios.post('/getoffice', { officeId: office.officeId })).data.name;
 
@@ -41,7 +40,7 @@ function TrackDocument(props) {
                 const td2 = document.createElement('td');
                 td2.innerText = status;
                 const td3 = document.createElement('td');
-                td3.innerText = "";
+                td3.innerText = remark || "";
 
                 trow.append(th, td1, td2, td3);
                 tbody.append(trow);

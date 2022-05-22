@@ -14,6 +14,9 @@ import EditProfile from './components/EditProfile';
 import ChangePassword from './components/ChangePassword';
 import EditOfficer from './components/EditOfficer';
 import DeleteAccount from './components/DeleteAccount';
+import VerifyDocuments from './components/VerifyDocuments';
+import SendDocument from './components/SendDocument';
+import CreateOffice from './components/CreateOffice';
 
 function App(props) {
   const role = props.user.role;
@@ -24,8 +27,8 @@ function App(props) {
           <AppHeader role='officer' />
           <Routes>
             <Route exact path="/" element={<Dashboard user={props.user} />} />
-            <Route exact path="/alldocuments" element={<AllDocuments user={props.user} />} />
-            <Route exact path="/editprofile" element={<EditOfficer user={props.user} />} />
+            <Route exact path="/verifydocuments" element={<VerifyDocuments user={props.user} />} />
+            <Route exact path="/senddocument/:documentId" element={<SendDocument user={props.user} />} />
             <Route exact path="/changepassword" element={<ChangePassword user={props.user} />} />
             <Route exact path="/deleteaccount" element={<DeleteAccount user={props.user} />} />
             <Route exact path="/logout" element={<Logout />} />
@@ -42,6 +45,7 @@ function App(props) {
             <Route exact path="/" element={<Dashboard user={props.user} />} />
             <Route exact path="/verifyofficers" element={<VerifyOfficers user={props.user} />} />
             <Route exact path="/generatecode" element={<GenerateCode user={props.user} />} />
+            <Route exact path="/createoffice" element={<CreateOffice user={props.user} />} />
             <Route exact path="/editprofile" element={<EditProfile user={props.user} />} />
             <Route exact path="/changepassword" element={<ChangePassword user={props.user} />} />
             <Route exact path="/deleteaccount" element={<DeleteAccount user={props.user} />} />

@@ -24,5 +24,4 @@ const officeSchema = mongoose.Schema({
 });
 
 const Office = new mongoose.model('Office', officeSchema);
-
-module.exports = { Office };
+module.exports = Office;

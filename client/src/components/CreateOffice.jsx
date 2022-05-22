@@ -2,39 +2,13 @@ import React from "react";
 import { Link } from 'react-router-dom';
 import axios from 'axios';
 
-function SubmitDocument(props) {
+function CreateOffice(props) {
 
     const { user } = props;
     React.useEffect(async () => {
-        const documentList = document.querySelector('#select-document');
         const stateList = document.querySelector('#state');
         const districtList = document.querySelector('#district');
         const subDistrictList = document.querySelector('#sub-district');
-        const officeList = document.querySelector('#office');
-
-        (async function getDocuments() {
-            const response = await axios.post('/mydocuments', { userId: user.userId });
-            if (response.data.status === 'failed') {
-                const errorBox = document.getElementById('error-box');
-                errorBox.innerHTML = `<div class="alert alert-danger alert-dismissible fade show" role="alert">
-                ${response.data.message}
-                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                </div>`;
-            }
-            else {
-                const { data } = response;
-                const userDocuments = data.documents;
-
-                documentList.innerHTML = '<option>Select a document</option>';
-
-                userDocuments.forEach(userDocument => {
-                    const option = document.createElement('option');
-                    option.innerText = userDocument.name;
-                    option.value = userDocument.documentId;
-                    documentList.appendChild(option);
-                });
-            }
-        }());
 
         (async function getStates() {
             const response = await axios.get('/states');
@@ -76,7 +50,6 @@ function SubmitDocument(props) {
 
                 districtList.innerHTML = '<option>Select a district</option>';
                 subDistrictList.innerHTML = '<option>Select a sub-district</option>';
-                officeList.innerHTML = '<option>Select a office</option>';
 
                 districts.forEach(district => {
                     const option = document.createElement('option');
@@ -100,7 +73,6 @@ function SubmitDocument(props) {
                 const subDistricts = response.data;
 
                 subDistrictList.innerHTML = '<option>Select a sub-district</option>';
-                officeList.innerHTML = '<option>Select a office</option>';
 
                 subDistricts.forEach(subDistrict => {
                     const option = document.createElement('option');
@@ -110,41 +82,18 @@ function SubmitDocument(props) {
             }
         }
 
-        async function getOffices() {
-            const payload = { state: stateList.value, district: districtList.value, subDistrict: subDistrictList.value };
-            const response = await axios.post('/offices', payload);
-
-            if (response.data.status === 'failed') {
-                const errorBox = document.getElementById('error-box');
-                errorBox.innerHTML = `<div class="alert alert-danger alert-dismissible fade show" role="alert">
-                ${response.data.message}
-                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                </div>`;
-            }
-            else {
-                const offices = response.data;
-
-                officeList.innerHTML = '<option>Select a office</option>';
-
-                offices.forEach(office => {
-                    const option = document.createElement('option');
-                    option.innerText = office.name;
-                    option.value = office.officeId;
-                    officeList.appendChild(option);
-                });
-            }
-        }
-
         stateList.addEventListener('change', getDistricts);
         districtList.addEventListener('change', getSubDistricts);
-        subDistrictList.addEventListener('change', getOffices);
 
         const submitBtn = document.getElementById('submit-btn');
 
         submitBtn.addEventListener('click', async () => {
-            const documentId = document.getElementById('select-document').value;
-            const officeId = document.getElementById('office').value;
-            const response = await axios.post('/submitdocument', { officeId, documentId });
+            const state = stateList.value;
+            const district = districtList.value;
+            const subDistrict = subDistrictList.value;
+            const officeName = document.getElementById('office').value;
+            const officeId = document.getElementById('officeId').value;
+            const response = await axios.post('/createoffice', { officeId, state, district, subDistrict, name: officeName });
             if (response.data.status === 'failed') {
                 const errorBox = document.getElementById('error-box');
                 errorBox.innerHTML = `<div class="alert alert-danger alert-dismissible fade show" role="alert">
@@ -161,13 +110,8 @@ function SubmitDocument(props) {
         <div className="mt-5">
             <div className="col-md-6 m-auto">
                 <div className="card card-body bg-light">
-                    <h1 className="text-center m-2"><i className="fas fa-sign-in-alt"></i> Submit Document</h1>
+                    <h1 className="text-center m-2"><i className="fas fa-sign-in-alt"></i> Create Office</h1>
                     <div className="form-group m-1" id="error-box"></div>
-                    <div className="form-group m-1">
-                        <label htmlFor="select-document">Document</label>
-                        <select className="form-select" name="select-document" id="select-document">
-                        </select>
-                    </div>
                     <div className="form-group m-1">
                         <label htmlFor="state">State</label>
                         <select className="form-select" name="state" id="state">
@@ -184,16 +128,16 @@ function SubmitDocument(props) {
                         </select>
                     </div>
                     <div className="form-group m-1">
-                        <label htmlFor="office">Office</label>
-                        <select className="form-select" name="office" id="office">
-                        </select>
+                        <label htmlFor="office">Office Name</label>
+                        <input type="text" className="form-control" name="office" id="office" placeholder="Enter office Name" />
+                    </div>
+                    <div className="form-group m-1">
+                        <label htmlFor="officeId">Office Id</label>
+                        <input type="text" className="form-control" name="officeId" id="officeId" placeholder="Enter office Id" />
                     </div>
                     <div className="m-2">
                         <div className="text-center d-flex justify-content-between m-1 mt-2">
                             <button type="submit" id="submit-btn" className="btn btn-primary btn-block">Submit</button>
-                            <p className="lead m-1">
-                                No Document? <Link to="/createdocument">Create Document</Link>
-                            </p>
                         </div>
                     </div>
                 </div>
@@ -202,4 +146,4 @@ function SubmitDocument(props) {
     </>
 }
 
-export default SubmitDocument;
+export default CreateOffice;

@@ -1,8 +1,8 @@
 const express = require('express');
 const router = express.Router();
 
-const { Census } = require('../models/Census');
-const { Office } = require('../models/Office');
+const Census = require('../models/Census');
+const Office = require('../models/Office');
 
 // Census request handlers
 router.get('/states', async (req, res) => {
