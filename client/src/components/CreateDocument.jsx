@@ -59,7 +59,7 @@ function CreateDocument(props) {
                         </div>
                         <div className="text-center d-flex justify-content-between m-1 mt-2">
                             <button type="submit" id="create-btn" className="btn btn-primary btn-block">
-                                Create
+                                Upload
                             </button>
                         </div>
                     </div>
