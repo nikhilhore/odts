@@ -162,7 +162,7 @@ function SendDocument(props) {
                     </div>
                     <div className="form-group m-1">
                         <label htmlFor="remark">Remark</label>
-                        <input type="text" id="remark" name="remark" className="form-control" placeholder="Enter ramarks if any" />
+                        <input type="text" id="remark" name="remark" className="form-control" placeholder="Enter remarks if any" />
                     </div>
                     <div className="form-group m-1">
                         <label htmlFor="state">State</label>

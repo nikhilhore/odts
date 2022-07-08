@@ -31,10 +31,6 @@ function AppHeader(props) {
                                 </div>
                             </li>
                         </ul>
-                        <form className="d-flex">
-                            <input className="form-control me-2 bg-light" type="search" placeholder="Find by category?" aria-label="Search" />
-                            <button className="btn bg-dark btn-outline-light disabled" type="submit">Search</button>
-                        </form>
                     </div>
                 </div>
             </nav>
@@ -70,10 +66,6 @@ function AppHeader(props) {
                                 </div>
                             </li>
                         </ul>
-                        <form className="d-flex">
-                            <input className="form-control me-2 bg-light" type="search" placeholder="Find by category?" aria-label="Search" />
-                            <button className="btn bg-dark btn-outline-light disabled" type="submit">Search</button>
-                        </form>
                     </div>
                 </div>
             </nav>
@@ -109,10 +101,6 @@ function AppHeader(props) {
                             </div>
                         </li>
                     </ul>
-                    <form className="d-flex">
-                        <input className="form-control me-2 bg-light" type="search" placeholder="Find by category?" aria-label="Search" />
-                        <button className="btn bg-dark btn-outline-light disabled" type="submit">Search</button>
-                    </form>
                 </div>
             </div>
         </nav>

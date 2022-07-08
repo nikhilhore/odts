@@ -8,7 +8,8 @@ function CreateDocument(props) {
         const createBtn = document.getElementById('create-btn');
 
         createBtn.addEventListener('click', async () => {
-            const visibility = document.getElementById('visibility').value;
+            // const visibility = document.getElementById('visibility').value;
+            const visibility = 'public';
             const name = document.getElementById('document-name').value;
             const file = document.getElementById('document-file').files[0];
 
@@ -41,13 +42,13 @@ function CreateDocument(props) {
                     </h1>
                     <div className="m-2">
                         <div className="form-group m-1" id="error-box"></div>
-                        <div className="form-group m-1">
+                        {/* <div className="form-group m-1">
                             <label htmlFor="visibility">Document Type</label>
                             <select className="form-select" name="visibility" id="visibility">
                                 <option value="private">Private</option>
                                 <option value="public">Public</option>
                             </select>
-                        </div>
+                        </div> */}
                         <div className="form-group m-1">
                             <label htmlFor="document-name">Name</label>
                             <input type="text" id="document-name" name="document-name" className="form-control" placeholder="Enter document name/description" />
